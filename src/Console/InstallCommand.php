@@ -12,6 +12,7 @@ class InstallCommand extends Command
      * @var string
      */
     protected $signature = 'dusk:install
+                {--firefox : Generate DuskTestCase class for Mozilla Firefox instead of Google Chrome.}
                 {--proxy= : The proxy to download the binary through (example: "tcp://127.0.0.1:9000")}
                 {--ssl-no-verify : Bypass SSL certificate verification when installing through a proxy}';
 
@@ -45,20 +46,17 @@ class InstallCommand extends Command
             $this->createConsoleDirectory();
         }
 
-        $stubs = [
-            'ExampleTest.stub' => base_path('tests/Browser/ExampleTest.php'),
-            'HomePage.stub' => base_path('tests/Browser/Pages/HomePage.php'),
-            'DuskTestCase.stub' => base_path('tests/DuskTestCase.php'),
-            'Page.stub' => base_path('tests/Browser/Pages/Page.php'),
-        ];
-
-        foreach ($stubs as $stub => $file) {
+        foreach ($this->stubPaths() as $stub => $file) {
             if (! is_file($file)) {
                 copy(__DIR__.'/../../stubs/'.$stub, $file);
             }
         }
 
         $this->info('Dusk scaffolding installed successfully.');
+
+        if ($this->option('firefox')) {
+            return;
+        }
 
         $this->comment('Downloading ChromeDriver binaries...');
 
@@ -101,5 +99,27 @@ class InstallCommand extends Command
         file_put_contents(base_path('tests/Browser/console/.gitignore'), '*
 !.gitignore
 ');
+    }
+
+    /**
+     * Find the class stubs to copy into the application.
+     *
+     * @return array
+     */
+    protected function stubPaths()
+    {
+        $stubs = [
+            'ExampleTest.stub' => base_path('tests/Browser/ExampleTest.php'),
+            'HomePage.stub' => base_path('tests/Browser/Pages/HomePage.php'),
+            'Page.stub' => base_path('tests/Browser/Pages/Page.php'),
+        ];
+
+        if ($this->option('firefox')) {
+            $stubs['FirefoxDuskTestCase.stub'] = base_path('tests/DuskTestCase.php');
+        } else {
+            $stubs['DuskTestCase.stub'] = base_path('tests/DuskTestCase.php');
+        }
+
+        return $stubs;
     }
 }
