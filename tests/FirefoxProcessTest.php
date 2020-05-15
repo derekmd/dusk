@@ -2,13 +2,26 @@
 
 namespace Laravel\Dusk\Tests;
 
+use Laravel\Dusk\DuskServiceProvider;
 use Laravel\Dusk\Firefox\FirefoxProcess;
-use PHPUnit\Framework\TestCase;
+use Orchestra\Testbench\TestCase;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 
 class FirefoxProcessTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->artisan('dusk:firefox-driver', ['--all' => true]);
+    }
+
+    public function getPackageProviders($app)
+    {
+        return [DuskServiceProvider::class];
+    }
+
     public function test_build_process_with_custom_driver()
     {
         $driver = __DIR__;

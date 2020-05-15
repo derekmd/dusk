@@ -47,6 +47,7 @@ class DuskServiceProvider extends ServiceProvider
                 Console\PurgeCommand::class,
                 Console\ComponentCommand::class,
                 Console\ChromeDriverCommand::class,
+                Console\FirefoxDriverCommand::class,
             ]);
         }
     }

@@ -2,3 +2,6 @@
 composer.lock
 /phpunit.xml
 .phpunit.result.cache
+bin/geckodriver-win.exe
+bin/geckodriver-linux
+bin/geckodriver-mac

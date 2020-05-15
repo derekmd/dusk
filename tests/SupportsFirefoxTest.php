@@ -3,11 +3,25 @@
 namespace Laravel\Dusk\Tests;
 
 use Laravel\Dusk\Firefox\SupportsFirefox;
-use PHPUnit\Framework\TestCase;
+use Laravel\Dusk\DuskServiceProvider;
+use Orchestra\Testbench\TestCase;
 
 class SupportsFirefoxTest extends TestCase
 {
     use SupportsFirefox;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // FirefoxProcessTest already downloads binaries
+        // $this->artisan('dusk:firefox-driver');
+    }
+
+    public function getPackageProviders($app)
+    {
+        return [DuskServiceProvider::class];
+    }
 
     public function test_it_can_run_firefox_process()
     {

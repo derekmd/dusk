@@ -55,22 +55,14 @@ class InstallCommand extends Command
         $this->info('Dusk scaffolding installed successfully.');
 
         if ($this->option('firefox')) {
-            return;
+            $this->comment('Downloading Geckodriver binaries...');
+
+            $this->call('dusk:firefox-driver', $this->driverCommandArgs());
+        } else {
+            $this->comment('Downloading ChromeDriver binaries...');
+
+            $this->call('dusk:chrome-driver', $this->driverCommandArgs());
         }
-
-        $this->comment('Downloading ChromeDriver binaries...');
-
-        $driverCommandArgs = ['--all' => true];
-
-        if ($this->option('proxy')) {
-            $driverCommandArgs['--proxy'] = $this->option('proxy');
-        }
-
-        if ($this->option('ssl-no-verify')) {
-            $driverCommandArgs['--ssl-no-verify'] = true;
-        }
-
-        $this->call('dusk:chrome-driver', $driverCommandArgs);
     }
 
     /**
@@ -121,5 +113,25 @@ class InstallCommand extends Command
         }
 
         return $stubs;
+    }
+
+    /**
+     * Build arguments for the driver download command.
+     *
+     * @return array
+     */
+    protected function driverCommandArgs()
+    {
+        $args = ['--all' => true];
+
+        if ($this->option('proxy')) {
+            $args['--proxy'] = $this->option('proxy');
+        }
+
+        if ($this->option('ssl-no-verify')) {
+            $args['--ssl-no-verify'] = true;
+        }
+
+        return args;
     }
 }
